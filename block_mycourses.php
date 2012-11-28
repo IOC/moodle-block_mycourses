@@ -140,4 +140,7 @@ class block_mycourses extends block_base {
         return array('my-index'=>true);
     }
 
+    public function instance_can_be_docked() {
+        return false;
+    }
 }
