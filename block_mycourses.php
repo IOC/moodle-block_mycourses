@@ -19,10 +19,10 @@
 /**
  * My courses block
  *
- *
- * @package   blocks
- * @author    Marc Català <mcatala@ioc.cat>
- * @license   http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ * @package    block
+ * @subpackage mycourses
+ * @author     Marc Català <reskit@gmail.com>
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
 require_once($CFG->dirroot.'/lib/weblib.php');
