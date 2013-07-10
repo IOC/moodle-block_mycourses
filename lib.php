@@ -84,7 +84,7 @@ function print_mycourses_overview($courses, $full=false) {
     $cat_courses = array();
     foreach ($courses as $course) {
         $parent = $course->category;
-        while ($aux = coursecat::get($parent)->get_parents()) {
+        if ($aux = coursecat::get($parent, MUST_EXIST, true)->get_parents()) {
             $parent = $aux[0];
         }
         $cat_courses[$parent][$course->id] = $course;
