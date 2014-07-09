@@ -29,7 +29,7 @@ if ($overview) {
 
     if (!empty($USER->id)) {
         $userid = $USER->id;  // Owner of the page
-        $context = get_context_instance(CONTEXT_USER, $USER->id);
+        $context = context_user::instance($USER->id);
         $PAGE->set_blocks_editing_capability('moodle/my:manageblocks');
         $header = "$SITE->shortname: $strmymoodle";
 
@@ -94,7 +94,7 @@ function print_mycourses_overview($courses, $full=false) {
         echo html_writer::start_tag('div', array('class' => 'categorybox'));
         echo $OUTPUT->heading($cat_names[$category], 3);
         foreach ($courses as $course) {
-            $fullname = format_string($course->fullname, true, array('context' => get_context_instance(CONTEXT_COURSE, $course->id)));
+            $fullname = format_string($course->fullname, true, array('context' => context_course::instance($course->id)));
             $attributes = array('title' => s($fullname));
             if (empty($course->visible)) {
                 $attributes['class'] = 'dimmed';
