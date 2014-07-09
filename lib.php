@@ -34,7 +34,7 @@ if ($overview) {
         $header = "$SITE->shortname: $strmymoodle";
 
         $PAGE->set_context($context);
-        $courses = enrol_get_my_courses('modinfo, sectioncache');
+        $courses = enrol_get_my_courses();
         $site = get_site();
         if (array_key_exists($site->id, $courses)) {
             unset($courses[$site->id]);
