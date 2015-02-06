@@ -2,7 +2,7 @@ YUI(M.yui.loader).use('io-base', 'node', function(Y) {
     Y.all(".overview-loading").show(true);
     var handleSuccess = function (transactionid, response, arguments) {
 	    var data = response.responseText;
-	    Y.one('#region-main .content').setContent(data);
+	    Y.one('#region-main .block_mycourses .content').setContent(data);
 	    Y.all("div.course-overview").hide(true);
 	    Y.on('click', function(e) {
 	  		    e.preventDefault();
