@@ -48,6 +48,7 @@ class block_mycourses extends block_base {
             return $this->content;
         }
 
+        $PAGE->requires->string_for_js('overload', 'block_mycourses');
         $PAGE->requires->js('/blocks/mycourses/index.js');
 
         $this->content = new stdClass();
@@ -106,7 +107,7 @@ class block_mycourses extends block_base {
         } else {
             ob_start();
 
-            print_mycourses_overview($courses);
+            echo print_mycourses_overview($courses);
 
             $content[] = ob_get_contents();
             ob_end_clean();

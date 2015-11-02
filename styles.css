@@ -1,3 +1,26 @@
 .overview-link, .overview-loading{
- margin-left:.5em;
+    margin-left:.5em;
+}
+
+.block_mycourses_overload {
+    text-align: center;
+    background: #eaf5fb;
+    color: #25566f;
+    height: 0;
+    overflow: hidden;
+    -webkit-border-radius: 0 0 8px 8px;
+       -moz-border-radius: 0 0 8px 8px;
+            border-radius: 0 0 8px 8px;
+    -webkit-transition: height 1s ease;
+       -moz-transition: height 1s ease;
+        -ms-transition: height 1s ease;
+         -o-transition: height 1s ease;
+            transition: height 1s ease;
+    -webkit-box-shadow: 4px 6px 5px -5px #ccc;
+       -moz-box-shadow: 4px 6px 5px -5px #ccc;
+            box-shadow: 4px 6px 5px -5px #ccc;
+}
+
+.block_mycourses_overload.load {
+    height: 1.7em;
 }

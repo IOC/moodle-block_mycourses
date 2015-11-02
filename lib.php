@@ -19,38 +19,47 @@
 require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
 require_once($CFG->dirroot . '/course/lib.php');
 require_once($CFG->libdir . '/coursecatlib.php');
+require_once($CFG->dirroot . '/admin/tool/siteperf/lib.php');
 
 $overview = optional_param('overview', false, PARAM_BOOL);
 
 if ($overview) {
-    header('Content-type: text/plain');
 
-    $strmymoodle = get_string('myhome');
+    $avgtime = get_avg_perf();
 
-    if (!empty($USER->id)) {
-        $userid = $USER->id;  // Owner of the page
-        $context = context_user::instance($USER->id);
-        $PAGE->set_blocks_editing_capability('moodle/my:manageblocks');
-        $header = "$SITE->shortname: $strmymoodle";
+    if ($avgtime <= $CFG->block_mycoursesoverview) {
+        header('Content-type: application/json; charset=utf-8');
 
-        $PAGE->set_context($context);
-        $courses = enrol_get_my_courses();
-        $site = get_site();
-        if (array_key_exists($site->id, $courses)) {
-            unset($courses[$site->id]);
-        }
-        foreach ($courses as $c) {
-            if (isset($USER->lastcourseaccess[$c->id])) {
-                $courses[$c->id]->lastaccess = $USER->lastcourseaccess[$c->id];
-            } else {
-                $courses[$c->id]->lastaccess = 0;
+        $strmymoodle = get_string('myhome');
+
+        if (!empty($USER->id)) {
+            $userid = $USER->id;  // Owner of the page
+            $context = context_user::instance($USER->id);
+            $PAGE->set_blocks_editing_capability('moodle/my:manageblocks');
+            $header = "$SITE->shortname: $strmymoodle";
+
+            $PAGE->set_context($context);
+            $courses = enrol_get_my_courses();
+            $site = get_site();
+            if (array_key_exists($site->id, $courses)) {
+                unset($courses[$site->id]);
             }
+            foreach ($courses as $c) {
+                if (isset($USER->lastcourseaccess[$c->id])) {
+                    $courses[$c->id]->lastaccess = $USER->lastcourseaccess[$c->id];
+                } else {
+                    $courses[$c->id]->lastaccess = 0;
+                }
+            }
+            if (empty($courses)) {
+                $output = $OUTPUT->box(get_string('nocourses','my'), 'center');
+            } else {
+                $output = print_mycourses_overview($courses, true);
+            }
+            echo json_encode(array('html' => $output));
         }
-        if (empty($courses)) {
-            echo $OUTPUT->box(get_string('nocourses','my'), 'center');
-        } else {
-            print_mycourses_overview($courses, true);
-        }
+    } else {
+        echo json_encode(array('overload' => '1'));
     }
 }
 
@@ -58,6 +67,7 @@ if ($overview) {
 function print_mycourses_overview($courses, $full=false) {
     global $CFG, $USER, $DB, $OUTPUT, $PAGE;
 
+    $output = '';
     $visible_courses = array();
     foreach ($courses as $id => $course) {
         if ($course->visible) {
@@ -91,8 +101,8 @@ function print_mycourses_overview($courses, $full=false) {
     }
 
     foreach ($cat_courses as $category => $courses) {
-        echo html_writer::start_tag('div', array('class' => 'categorybox'));
-        echo $OUTPUT->heading($cat_names[$category], 3);
+        $output .= html_writer::start_tag('div', array('class' => 'categorybox'));
+        $output .= $OUTPUT->heading($cat_names[$category], 3);
         foreach ($courses as $course) {
             $fullname = format_string($course->fullname, true, array('context' => context_course::instance($course->id)));
             $attributes = array('title' => s($fullname));
@@ -123,19 +133,42 @@ function print_mycourses_overview($courses, $full=false) {
                     . ' style="display: none" alt="" />';
                 }
             }
-            echo $OUTPUT->box_start('coursebox');
-            echo $OUTPUT->heading(html_writer::link(
+            $output .= $OUTPUT->box_start('coursebox');
+            $output .= $OUTPUT->heading(html_writer::link(
                     new moodle_url('/course/view.php', array('id' => $course->id)), $fullname, $attributes).$show_overview, 3);
             if (array_key_exists($course->id,$htmlarray)) {
                 foreach ($htmlarray[$course->id] as $modname => $html) {
-                    echo html_writer::start_tag('div', array('id' => 'overview-'. $course->id .'-'.$modname,
+                    $output .= html_writer::start_tag('div', array('id' => 'overview-'. $course->id .'-'.$modname,
                             'class' => 'course-overview'));
-                    echo $html;
-                    echo html_writer::end_tag('div');
+                    $output .= $html;
+                    $output .= html_writer::end_tag('div');
                 }
             }
-            echo $OUTPUT->box_end();
+            $output .= $OUTPUT->box_end();
         }
-        echo html_writer::end_tag('div');
+        $output .= html_writer::end_tag('div');
     }
+    return $output;
+}
+
+function get_avg_perf() {
+
+    if (class_exists('tool_siteperf_stats')) {
+        $stats = new tool_siteperf_stats();
+
+        $now = time();
+        $params = array(
+            'year' => date('o', $now),
+            'week' => date('W', $now),
+            'day'  => date('w', $now),
+            'hour' => date('G', $now)
+        );
+
+        $data = $stats->fetch($params['year'], $params['week'], $params['day'], $params['hour']);
+
+        $avgtime = (isset($data->time) ? $data->time : 0);
+
+        return $avgtime;
+    }
+    return 0;
 }
