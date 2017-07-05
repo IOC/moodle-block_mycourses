@@ -122,14 +122,14 @@ function print_mycourses_overview($courses, $full=false) {
                                         'href' => '#'));
                                 $show_overview .= html_writer::empty_tag('img', array('title' => $modname,
                                         'class' => 'icon',
-                                        'src' =>  $OUTPUT->pix_url('icon', $mod)));
+                                        'src' =>  $OUTPUT->image_url('icon', $mod)));
                                 $show_overview .= html_writer::end_tag('a');
                             }
                         }
                     }
                 }else{
                     $show_overview = '<img class="overview-loading"'
-                    . ' src="'. $OUTPUT->pix_url('i/ajaxloader').'"'
+                    . ' src="'. $OUTPUT->image_url('i/ajaxloader').'"'
                     . ' style="display: none" alt="" />';
                 }
             }
