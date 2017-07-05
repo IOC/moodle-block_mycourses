@@ -15,18 +15,26 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * @package    block
- * @subpackage mycourses
- * @copyright  2015 Institut Obert de Catalunya
+ * Privacy Subsystem implementation for block_mycourses.
+ *
+ * @package    block_mycourses
+ * @copyright  2018 Institut Obert de Catalunya
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
+namespace block_mycourses\privacy;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version   = 2015102902;        // The current plugin version (Date: YYYYMMDDXX)
-$plugin->requires  = 2018051700;        // Requires this Moodle version
-$plugin->component = 'block_mycourses'; // Full name of the plugin (used for diagnostics)
+class provider implements \core_privacy\local\metadata\null_provider {
 
-$plugin->dependencies = array(
-    'tool_siteperf' => 2015072000
-);
+    /**
+     * Get the language string identifier with the component's language
+     * file to explain why this plugin stores no data.
+     *
+     * @return  string
+     */
+    public static function get_reason() : string {
+        return 'privacy:metadata';
+    }
+}

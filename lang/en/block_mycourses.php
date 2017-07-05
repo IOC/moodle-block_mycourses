@@ -5,3 +5,4 @@ $string['mycoursesoverview'] = 'Hide overview when average server access time it
 $string['mycourses:addinstance'] = 'Add a new My courses block';
 $string['mycourses:myaddinstance'] = 'Add a new My courses block to My home';
 $string['overload'] = 'Due server overload, overview is not avaliable';
+$string['privacy:metadata'] = 'My courses plugin does not store any personal data.';
